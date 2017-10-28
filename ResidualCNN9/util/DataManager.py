@@ -1,8 +1,8 @@
 import numpy as np
 import nltk
 import itertools
-from Relation import Relation
-from Sentence import Sentence
+from util.Relation import Relation
+from util.Sentence import Sentence
 
 
 class DataManager:
