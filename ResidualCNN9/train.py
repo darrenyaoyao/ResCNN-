@@ -50,8 +50,12 @@ shuffle_indices = np.random.permutation(np.arange(len(training_data)))
 training_data = training_data[shuffle_indices]
 print("Finish randomize data")
 
-train = training_data
-dev = training_data[-1000:]
+# train = training_data
+# dev = training_data[-1000:]
+train = training_data[0:129]
+dev = training_data[-20:]
+wanted_keys = list(testing_data.keys())[0:10]
+testing_data = {k: v for k, v in testing_data.items() if k in wanted_keys}
 
 # Start Training
 # ====================
