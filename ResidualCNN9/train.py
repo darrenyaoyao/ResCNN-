@@ -42,7 +42,7 @@ datamanager = DataManager(FLAGS.sequence_length)
 training_data = datamanager.load_training_data()
 training_data = np.array(training_data)
 testing_data = datamanager.load_testing_data()
-print(str(len(training_data))+" "+str(len(testing_data)))
+print(str(len(training_data)) + " " + str(len(testing_data)))
 
 # Random shuffle data
 np.random.seed(10)
@@ -58,8 +58,8 @@ dev = training_data[-1000:]
 print("Start Training")
 with tf.Graph().as_default():
     session_conf = tf.ConfigProto(
-      allow_soft_placement=FLAGS.allow_soft_placement,
-      log_device_placement=FLAGS.log_device_placement)
+        allow_soft_placement=FLAGS.allow_soft_placement,
+        log_device_placement=FLAGS.log_device_placement)
     sess = tf.Session(config=session_conf)
     with sess.as_default():
         cnn = RECnn(
@@ -93,44 +93,47 @@ with tf.Graph().as_default():
         # Initialize all variables
         sess.run(tf.global_variables_initializer())
 
+
         def train_step(x_batch, y_batch, p1_batch, p2_batch):
             """
             A single training step
             """
             feed_dict = {
-              cnn.input_x: x_batch,
-              cnn.input_y: y_batch,
-              cnn.input_p1: p1_batch,
-              cnn.input_p2: p2_batch,
-              cnn.dropout_keep_prob: FLAGS.dropout_keep_prob
+                cnn.input_x: x_batch,
+                cnn.input_y: y_batch,
+                cnn.input_p1: p1_batch,
+                cnn.input_p2: p2_batch,
+                cnn.dropout_keep_prob: FLAGS.dropout_keep_prob
             }
             _, step, loss, accuracy = sess.run(
                 [train_op, global_step, cnn.loss, cnn.accuracy],
                 feed_dict)
             time_str = datetime.datetime.now().isoformat()
-            #print("{}: step {}, loss {:g}, acc {:g}".format(time_str, step, loss, accuracy))
+            # print("{}: step {}, loss {:g}, acc {:g}".format(time_str, step, loss, accuracy))
             return loss
+
 
         def dev_step(x_batch, y_batch, p1_batch, p2_batch):
             """
             A single training step
             """
             feed_dict = {
-              cnn.input_x: x_batch,
-              cnn.input_y: y_batch,
-              cnn.input_p1: p1_batch,
-              cnn.input_p2: p2_batch,
-              cnn.dropout_keep_prob: 1
+                cnn.input_x: x_batch,
+                cnn.input_y: y_batch,
+                cnn.input_p1: p1_batch,
+                cnn.input_p2: p2_batch,
+                cnn.dropout_keep_prob: 1
             }
             _, step, loss, accuracy = sess.run(
                 [train_op, global_step, cnn.loss, cnn.accuracy],
                 feed_dict)
             print("step {}, loss {:g}, acc {:g}".format(step, loss, accuracy))
 
+
         # Generate batches
         batches = datamanager.batch_iter(
             train, FLAGS.batch_size, FLAGS.num_epochs)
-        num_batches_per_epoch = int(len(train)/FLAGS.batch_size) + 1
+        num_batches_per_epoch = int(len(train) / FLAGS.batch_size) + 1
         print("Batch data")
         # Training loop. For each batch...
         num_batch = 1
@@ -142,7 +145,8 @@ with tf.Graph().as_default():
             if num_batch == num_batches_per_epoch:
                 num_epoch += 1
                 num_batch = 1
-                test(testing_data, cnn.input_x, cnn.input_p1, cnn.input_p2, cnn.scores, cnn.predictions, cnn.dropout_keep_prob, datamanager, sess, num_epoch)
+                test(testing_data, cnn.input_x, cnn.input_p1, cnn.input_p2, cnn.scores, cnn.predictions,
+                     cnn.dropout_keep_prob, datamanager, sess, num_epoch)
                 path = saver.save(sess, checkpoint_prefix, global_step=current_step)
             num_batch += 1
             x_batch = datamanager.generate_x(batch)

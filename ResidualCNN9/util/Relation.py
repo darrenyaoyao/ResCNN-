@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class Relation:
     def __init__(self, name, id_):
         self.id = id_

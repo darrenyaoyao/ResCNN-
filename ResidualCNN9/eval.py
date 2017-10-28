@@ -50,8 +50,8 @@ checkpoint_file = tf.train.latest_checkpoint(FLAGS.checkpoint_dir)
 graph = tf.Graph()
 with graph.as_default():
     session_conf = tf.ConfigProto(
-      allow_soft_placement=FLAGS.allow_soft_placement,
-      log_device_placement=FLAGS.log_device_placement)
+        allow_soft_placement=FLAGS.allow_soft_placement,
+        log_device_placement=FLAGS.log_device_placement)
     sess = tf.Session(config=session_conf)
     with sess.as_default():
         # Load the saved meta graph and restore variables
@@ -68,6 +68,5 @@ with graph.as_default():
         # Tensors we want to evaluate
         s = graph.get_operation_by_name("output/scores").outputs[0]
         p = graph.get_operation_by_name("output/predictions").outputs[0]
-
 
         test(testing_data, input_x, input_p1, input_p2, s, p, dropout_keep_prob, datamanager, sess, -1)

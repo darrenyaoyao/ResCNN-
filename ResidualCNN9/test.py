@@ -15,7 +15,7 @@ def test(testing_data, input_x, input_p1, input_p2, s, p, dropout_keep_prob, dat
         max_pro = 0
         prediction = -1
         for score in scores:
-            score = np.exp(score-np.max(score))
+            score = np.exp(score - np.max(score))
             score = score/score.sum(axis=0)
             score[0] = 0
             pro = score[np.argmax(score)]
