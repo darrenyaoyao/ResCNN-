@@ -54,7 +54,7 @@ class DataManager:
         f = open("../data/RE/entity2id.txt", "a")
         print("Start loading training data.")
         print("====================")
-        training_data = list(open(filename).readlines())
+        training_data = list(open(filename, encoding='utf-8').readlines())
         training_data = [s.split() for s in training_data]
         for data in training_data:
             entity1 = data[2]
@@ -80,7 +80,7 @@ class DataManager:
         # load training data from file
         print("Start loading testing data.")
         print("====================")
-        testing_data = list(open("../data/RE/test.txt").readlines())
+        testing_data = list(open("../data/RE/test.txt", encoding='utf-8').readlines())
         testing_data = [s.split() for s in testing_data]
         # for data in testing_data:
         for data in testing_data:
