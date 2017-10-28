@@ -6,7 +6,7 @@ import os
 import time
 import datetime
 from Cnn import RECnn
-from test import test
+from testCNN9 import test
 from util.DataManager import DataManager
 
 # Parameters
