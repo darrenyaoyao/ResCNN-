@@ -177,8 +177,8 @@ class DataManager:
                 p22.append(b + 31)
             a = self.sequence_length - len(p11)
             if a > 0:
-                front = a / 2
-                back = a - front
+                front = np.int(a / 2)
+                back = np.int(a - front)
                 front_vec = [0 for i in range(front)]
                 back_vec = [0 for i in range(back)]
                 p11 = front_vec + p11 + back_vec
@@ -193,8 +193,8 @@ class DataManager:
     def padding(self, vectors):
         a = self.sequence_length - len(vectors)
         if a > 0:
-            front = a / 2
-            back = a - front
+            front = np.int(a / 2)
+            back = np.int(a - front)
             front_vec = [np.zeros(self.wordvector_dim) for i in range(front)]
             back_vec = [np.zeros(self.wordvector_dim) for i in range(back)]
             vectors = front_vec + vectors + back_vec
