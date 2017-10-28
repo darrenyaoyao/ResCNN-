@@ -21,7 +21,7 @@ class DataManager:
     def load_word2vec(self):
         # load word2vec from file
         # Two data structure: word2index, index2vector
-        wordvector = list(open("../data/vector1.txt", "r").readlines())
+        wordvector = list(open("../data/vector1.txt", "r", encoding='utf-8').readlines())
         wordvector = [s.split() for s in wordvector]
         self.wordvector_dim = len(wordvector[0]) - 1
         self.word2index["UNK"] = 0
