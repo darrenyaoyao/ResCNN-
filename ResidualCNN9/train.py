@@ -22,7 +22,7 @@ tf.flags.DEFINE_float("l2_reg_lambda", 0.0, "L2 regularizaion lambda (default: 0
 
 # Training parameters
 tf.flags.DEFINE_integer("batch_size", 64, "Batch Size (default: 64)")
-tf.flags.DEFINE_integer("num_epochs", 5, "Number of training epochs (default: 5)")
+tf.flags.DEFINE_integer("num_epochs", 200, "Number of training epochs (default: 200)")
 tf.flags.DEFINE_integer("evaluate_every", 1000, "Evaluate model on dev set after this many steps (default: 100)")
 tf.flags.DEFINE_integer("checkpoint_every", 100, "Save model after this many steps (default: 100)")
 # Misc Parameters
@@ -50,12 +50,8 @@ shuffle_indices = np.random.permutation(np.arange(len(training_data)))
 training_data = training_data[shuffle_indices]
 print("Finish randomize data")
 
-# train = training_data
-# dev = training_data[-1000:]
-train = training_data[0:129]
-dev = training_data[-20:]
-wanted_keys = list(testing_data.keys())[0:10]
-testing_data = {k: v for k, v in testing_data.items() if k in wanted_keys}
+train = training_data
+dev = training_data[-1000:]
 
 # Start Training
 # ====================
