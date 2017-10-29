@@ -8,6 +8,7 @@ import datetime
 from Cnn import RECnn
 from testCNN9 import test
 from util.DataManager import DataManager
+from tensorflow.python import debug as tf_debug
 
 # Parameters
 # ==================================================
@@ -65,6 +66,7 @@ with tf.Graph().as_default():
         allow_soft_placement=FLAGS.allow_soft_placement,
         log_device_placement=FLAGS.log_device_placement)
     sess = tf.Session(config=session_conf)
+    # tf_debug.LocalCLIDebugWrapperSession(sess)
     with sess.as_default():
         cnn = RECnn(
             FLAGS.sequence_length,
