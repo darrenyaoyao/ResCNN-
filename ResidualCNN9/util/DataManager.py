@@ -1,8 +1,9 @@
 import numpy as np
 import nltk
 import itertools
-from Relation import Relation
-from Sentence import Sentence
+from util.Relation import Relation
+from util.Sentence import Sentence
+
 
 class DataManager:
     def __init__(self, sequence_length):
@@ -18,18 +19,19 @@ class DataManager:
         self.load_relations()
 
     def load_word2vec(self):
-        #load word2vec from file
-        #Two data structure: word2index, index2vector
-        wordvector = list(open("../data/vector1.txt", "r").readlines())
+        # load word2vec from file
+        # Two data structure: word2index, index2vector
+        # vector1.txt is glove.6B.50d.txt
+        wordvector = list(open("../data/vector1.txt", "r", encoding='utf-8').readlines())
         wordvector = [s.split() for s in wordvector]
-        self.wordvector_dim = len(wordvector[0])-1
+        self.wordvector_dim = len(wordvector[0]) - 1
         self.word2index["UNK"] = 0
         self.index2vector.append(np.zeros(self.wordvector_dim))
         index = 1
         for vec in wordvector:
             a = np.zeros(self.wordvector_dim)
             for i in range(self.wordvector_dim):
-                a[i] = float(vec[i+1])
+                a[i] = float(vec[i + 1])
             self.word2index[vec[0]] = index
             self.index2vector.append(a)
             index += 1
@@ -38,7 +40,7 @@ class DataManager:
         print("Word dimension=\t", self.wordvector_dim)
 
     def load_relations(self):
-        #load relation from file
+        # load relation from file
         relation_data = list(open("../data/RE/relation2id.txt").readlines())
         relation_data = [s.split() for s in relation_data]
         for relation in relation_data:
@@ -46,14 +48,14 @@ class DataManager:
             self.relations[relation[0]] = r
         for r in self.relations:
             self.relations[r].generate_vector(len(self.relations))
-        print("RelationTotal: "+str(len(self.relations)))
+        print("RelationTotal: " + str(len(self.relations)))
 
     def load_training_data(self, filename="../data/RE/train.txt", distant_supervision=True):
-        #load training data from file
+        # load training data from file
         f = open("../data/RE/entity2id.txt", "a")
         print("Start loading training data.")
         print("====================")
-        training_data = list(open(filename).readlines())
+        training_data = list(open(filename, encoding='utf-8').readlines())
         training_data = [s.split() for s in training_data]
         for data in training_data:
             entity1 = data[2]
@@ -76,12 +78,12 @@ class DataManager:
         return self.training_data
 
     def load_testing_data(self):
-        #load training data from file
+        # load training data from file
         print("Start loading testing data.")
         print("====================")
-        testing_data = list(open("../data/RE/test.txt").readlines())
+        testing_data = list(open("../data/RE/test.txt", encoding='utf-8').readlines())
         testing_data = [s.split() for s in testing_data]
-        #for data in testing_data:
+        # for data in testing_data:
         for data in testing_data:
             entity1 = data[2]
             entity2 = data[3]
@@ -93,15 +95,15 @@ class DataManager:
                          entity2,
                          relation,
                          data[5:-1])
-            if data[0]+"\t"+data[1] not in self.bags_test:
-                self.bags_test[entity1+" "+entity2] = [s]
+            if data[0] + "\t" + data[1] not in self.bags_test:
+                self.bags_test[entity1 + " " + entity2] = [s]
             else:
-                self.bags_test[entity1+" "+entity2].append(s)
+                self.bags_test[entity1 + " " + entity2].append(s)
         return self.bags_test
 
     def relation_analyze(self):
         for r in self.relations:
-            print(r+": "+str(self.relations[r].number))
+            print(r + ": " + str(self.relations[r].number))
 
     def batch_iter(self, data, batch_size, num_epochs, shuffle=True):
         """
@@ -109,9 +111,9 @@ class DataManager:
         """
         data = np.asarray(data)
         data_size = len(data)
-        num_batches_per_epoch = int(len(data)/batch_size) + 1
+        num_batches_per_epoch = int(len(data) / batch_size) + 1
         for epoch in range(num_epochs):
-            #Shuffle the data at each epoch
+            # Shuffle the data at each epoch
             if shuffle:
                 shuffle_indices = np.random.permutation(np.arange(data_size))
                 shuffled_data = data[shuffle_indices]
@@ -162,8 +164,8 @@ class DataManager:
                 if w == e2:
                     l2 = i
             for i, w in enumerate(words):
-                a = i-l1
-                b = i-l2
+                a = i - l1
+                b = i - l2
                 if a > 30:
                     a = 30
                 if b > 30:
@@ -172,12 +174,12 @@ class DataManager:
                     a = -30
                 if b < -30:
                     b = -30
-                p11.append(a+31)
-                p22.append(b+31)
-            a = self.sequence_length-len(p11)
+                p11.append(a + 31)
+                p22.append(b + 31)
+            a = self.sequence_length - len(p11)
             if a > 0:
-                front = a/2
-                back = a-front
+                front = np.int(a / 2)
+                back = np.int(a - front)
                 front_vec = [0 for i in range(front)]
                 back_vec = [0 for i in range(back)]
                 p11 = front_vec + p11 + back_vec
@@ -189,12 +191,11 @@ class DataManager:
             p2.append(p22)
         return p1, p2
 
-
     def padding(self, vectors):
-        a = self.sequence_length-len(vectors)
+        a = self.sequence_length - len(vectors)
         if a > 0:
-            front = a/2
-            back = a-front
+            front = np.int(a / 2)
+            back = np.int(a - front)
             front_vec = [np.zeros(self.wordvector_dim) for i in range(front)]
             back_vec = [np.zeros(self.wordvector_dim) for i in range(back)]
             vectors = front_vec + vectors + back_vec
@@ -204,6 +205,7 @@ class DataManager:
 
     def word2num(self, words):
         return [words2index[w] for w in words]
+
 
 def __init__():
     return 0
